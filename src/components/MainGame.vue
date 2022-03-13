@@ -10,8 +10,12 @@
             revealed: block.revealed
           }"
           @click="onClick(block)"
+          @contextmenu.prevent="onRightClick(block)"
         >
-          <span v-if="!block.revealed" class="trans-num">0</span>
+          <span v-if="block.flagged" class="flag">🏳️</span>
+          <span v-else-if="!block.revealed && !isOver" class="trans-num"
+            >0</span
+          >
           <span v-else-if="block.boom" class="boom"> 💥 </span>
           <span v-else :class="{ 'trans-num': block.neighborBooms === 0 }">
             {{ block.neighborBooms }}
@@ -40,7 +44,7 @@ export default defineComponent({
   setup() {
     const WIDTH = ref(10);
     const HEIGHT = ref(10);
-    const isDev = ref(true);
+    const isOver = ref(false);
     let blocks: BlockState[][] = [];
 
     function initBlocks() {
@@ -116,6 +120,7 @@ export default defineComponent({
         return;
       }
       block.revealed = true;
+      block.flagged = false;
       if (block.neighborBooms === 0) {
         getNeighbors(block).forEach((n) => {
           if (n.neighborBooms === 0) {
@@ -123,17 +128,52 @@ export default defineComponent({
           }
         });
       }
+      checkGameStatus();
+    }
+
+    function checkGameStatus() {
+      const flatBlocks = blocks.flat();
+      const isAllChecked = flatBlocks.every((item) => {
+        return item.flagged || item.revealed;
+      });
+      if (isAllChecked) {
+        const lose = flatBlocks.some((item) => item.flagged && !item.boom);
+        if (lose) {
+          showLose();
+        } else {
+          showWin();
+        }
+      }
+    }
+
+    function showWin() {
+      alert('你胜利了~');
+      isOver.value = true;
+    }
+
+    function showLose() {
+      alert('爆炸了~');
+      isOver.value = true;
     }
 
     return {
       blocks,
-      isDev,
-      reveal
+      isOver,
+      reveal,
+      showLose,
+      checkGameStatus
     };
   },
   methods: {
     onClick(block: BlockState) {
       this.reveal(block);
+      if (block.boom) {
+        this.showLose();
+      }
+    },
+    onRightClick(block: BlockState) {
+      block.flagged = true;
+      this.checkGameStatus();
     }
   }
 });
@@ -154,6 +194,7 @@ export default defineComponent({
   background-color: rgba(66, 66, 66, 0.4);
   font-weight: 800;
   font-size: 16px;
+  cursor: pointer;
 }
 .box-num-1 {
   color: darkorchid;
@@ -179,21 +220,17 @@ export default defineComponent({
 .box-num-8 {
   color: teal;
 }
-.box:hover {
+.box:hover:not(.revealed) {
   background-color: rgba(66, 66, 66, 0.2);
 }
 .revealed {
   background: rgba(66, 66, 66, 0.1);
+  cursor: default;
 }
 .box-boom {
   background: rgba(255, 0, 0, 0.3);
 }
 .trans-num {
   color: transparent;
-}
-</style>
-<style>
-body {
-  background: darkblue;
 }
 </style>
