@@ -21,10 +21,10 @@ jobs:
 
       - name: commit
         run: |
-          git add .
-          git commit -m 'github-actions-commit'
           git config user.email "actions@github.com"
           git config user.name "github-actions"
+          git add .
+          git commit -m 'github-actions-commit'
 
       - name: depoly
         run: |
