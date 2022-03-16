@@ -8,22 +8,23 @@ jobs:
     steps:
       - name: prepare repo
         uses: actions/checkout@v2
-      
+
       - name: prepare node
         uses: actions/setup-node@v2
         with:
           node-version: '16'
-      
+
       - name: build
         run: |
           npm ci
           npm run build
-      
+
       - name: commit
-        git add .
-        git commit -m 'github-actions-commit'
-        git config user.email "actions@github.com"
-        git config user.name "github-actions"
+        run: |
+          git add .
+          git commit -m 'github-actions-commit'
+          git config user.email "actions@github.com"
+          git config user.name "github-actions"
 
       - name: depoly
         run: |
