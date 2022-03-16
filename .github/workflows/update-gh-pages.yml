@@ -7,10 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: prepare repo
-        uses: actions/checkout@2
+        uses: actions/checkout@v2
       
       - name: prepare node
-        uses: actions/setup-node@2
+        uses: actions/setup-node@v2
         with:
           node-version: '16'
       
@@ -25,7 +25,7 @@ jobs:
           git commit -m 'github-actions-commit'
           git remote remove origin
           git remote add origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPO}.git
-          git push --set-upstream origin gh-pages
+          git push --set-upstream -f origin gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           GITHUB_REPO: vue-little-minesweeper
