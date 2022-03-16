@@ -16,6 +16,8 @@ jobs:
 
       - name: build
         run: |
+          git checkout gh-pages
+          git merge master
           npm ci
           npm run build
 
