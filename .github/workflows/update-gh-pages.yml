@@ -18,11 +18,15 @@ jobs:
         run: |
           npm ci
           npm run build
+      
+      - name: commit
+        git add .
+        git commit -m 'github-actions-commit'
+        git config user.email "actions@github.com"
+        git config user.name "github-actions"
 
       - name: depoly
         run: |
-          git add .
-          git commit -m 'github-actions-commit'
           git remote remove origin
           git remote add origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPO}.git
           git push --set-upstream -f origin gh-pages
