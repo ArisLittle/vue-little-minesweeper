@@ -33,4 +33,4 @@ jobs:
           git push --set-upstream -f origin gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          GITHUB_REPO: vue-little-minesweeper
+          GITHUB_REPO: ArisLittle/vue-little-minesweeper
